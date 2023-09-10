@@ -35,6 +35,21 @@ function createSegments() {
             ctx.fill();
         }
 
+        // Clear and update the color code container
+        const colorCodeContainer = document.getElementById("colorCodeContainer");
+
+        for (let i = 0; i < numSegments; i++) {
+            // Create a textbox for each color code
+            const colorCodeTextbox = document.createElement("input");
+            colorCodeTextbox.type = "text";
+            colorCodeTextbox.value = colors[i];
+            colorCodeTextbox.readOnly = true;
+
+            // Add the textbox to the color code container
+            colorCodeContainer.appendChild(colorCodeTextbox);
+        }
+        
+
         // Update h1 element's color dynamically
         const gradientColors = colors.join(", ");
         h1.style.background = `linear-gradient(to right, ${gradientColors})`;

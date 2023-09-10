@@ -47,6 +47,21 @@ html, body {
     margin: 0 auto;
 }
 
+.color-code-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.color-code-container input[type="text"] {
+    margin: 0 10px;
+    padding: 5px;
+    border: 1px solid #000;
+    text-align: center;
+    font-size: 1em;
+    width: 80px; /* Adjust the width as needed */
+}
+
 /* For mobile devices*/
 @media all and (pointer:none) , (pointer:coarse) {
     h1 {font-size: 2.5em;}
