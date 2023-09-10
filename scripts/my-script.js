@@ -36,10 +36,11 @@ function createSegments() {
         }
 
         // Update h1 element's color dynamically
-        h1.style.background = `linear-gradient(to right, ${colors.join(", ")})`;
+        const gradientColors = colors.join(", ");
         h1.style.background = `linear-gradient(to right, ${gradientColors})`;
         h1.style["-webkit-background-clip"] = "text";
         h1.style.color = "transparent";
+
     }
 }
 

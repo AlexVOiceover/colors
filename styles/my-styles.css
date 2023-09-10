@@ -1,5 +1,5 @@
 h1 {font-family: 'Roboto', sans-serif;
-    text-align: left;
+    text-align: center;
     padding-left: 4%;
     font-size: 5em;
     margin-bottom: 0.3em;
@@ -33,11 +33,14 @@ html, body {
 }
 
 .textbox {
+    display: block;
     border:1px solid rgb(0, 0, 0);
     font-family: 'Orbitron', sans-serif;
     font-size: large;
     letter-spacing: 0.2em;
-}
+    margin: 2em auto;
+    text-align: center;
+ }
 
 #rouletteCircle {
     display: block;
