@@ -40,47 +40,52 @@ html, body {
     letter-spacing: 0.2em;
 }
 
-.circle {
-    width: 200px;
-    height: 200px;
-    background-color: #c20430;
-    border-radius: 50%;
-    margin: 20px auto;
-    position: relative;
-  }
-  
-  .circle:after {
-    content: "";
-    position: absolute;
+.segment {
     width: 0;
     height: 0;
     border-style: solid;
-    border-width: 100px 50px;
-    border-color: transparent transparent transparent transparent;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+/* Add segments based on numColorsTextbox value */
+.segment:nth-child(1) {
+    border-width: 0 100px 200px 100px; 
+    border-color: transparent transparent #c20430 transparent; /* Color for segment 1 */
     transform: rotate(0deg);
-    transition: transform 0.5s ease-in-out;
-  }
-  
-  /* Add segments based on numColorsTextbox value */
-  .circle[data-segments="2"]:after {
-    transform: rotate(180deg);
-  }
-  
-  .circle[data-segments="3"]:after {
-    transform: rotate(120deg);
-  }
-  
-  .circle[data-segments="4"]:after {
-    transform: rotate(90deg);
-  }
-  
-  .circle[data-segments="5"]:after {
-    transform: rotate(72deg);
-  }
-  
-  .circle[data-segments="6"]:after {
+}
+
+.segment:nth-child(2) {
+    border-width: 0 100px 200px 100px; 
+    border-color: transparent transparent #007acc transparent; /* Color for segment 2 */
     transform: rotate(60deg);
-  }
+}
+
+.segment:nth-child(3) {
+    border-width: 0 100px 200px 100px;
+    border-color: transparent transparent #ff5733 transparent; /* Color for segment 3 */
+    transform: rotate(120deg);
+}
+
+.segment:nth-child(4) {
+    border-width: 0 100px 200px 100px;
+    border-color: transparent transparent #ffa500 transparent; /* Color for segment 4 */
+    transform: rotate(180deg);
+}
+
+.segment:nth-child(5) {
+    border-width: 0 100px 200px 100px;
+    border-color: transparent transparent #ff5733 transparent; /* Color for segment 5 */
+    transform: rotate(240deg);
+}
+
+.segment:nth-child(6) {
+    border-width: 0 100px 200px 100px;
+    border-color: transparent transparent #007acc transparent; /* Color for segment 6 */
+    transform: rotate(300deg);
+}
+
 
 
 /* For mobile devices*/
