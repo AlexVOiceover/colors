@@ -2,7 +2,12 @@ const canvas = document.getElementById("rouletteCircle");
 const ctx = canvas.getContext("2d");
 const h1 = document.querySelector("h1"); // Select the h1 element
 
+let isSpinning = false; // Track if the roulette is spinning
+let spinSpeed = 0.05; // Speed of spinning
+
 function createSegments() {
+    if (isSpinning) return; // Prevent creating segments while spinning
+
     const numColorsTextbox = document.getElementById("numColorsTextbox");
     const numSegments = parseInt(numColorsTextbox.value);
 
@@ -58,19 +63,22 @@ function createSegments() {
             colorCodeContainer.appendChild(colorCodeTextbox);
         }
 
-
         // Update h1 element's color dynamically
         const gradientColors = colors.join(", ");
         h1.style.background = `linear-gradient(to right, ${gradientColors})`;
         h1.style["-webkit-background-clip"] = "text";
         h1.style.color = "transparent";
-
     }
 }
 
-// Generate new colors on click
+// Generate new colors and start spinning on click
 const rouletteCircle = document.getElementById("rouletteCircle");
-rouletteCircle.addEventListener("click", generateNewColors);
+rouletteCircle.addEventListener("click", () => {
+    if (!isSpinning) {
+        isSpinning = true;
+        spinRoulette();
+    }
+});
 
 function getRandomColors(numSegments) {
     const colors = [];
@@ -101,6 +109,35 @@ function isDarkColor(color) {
     const b = parseInt(color.slice(5, 7), 16);
     const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
     return luminance < 0.5; // You can adjust the threshold for what you consider "dark"
+}
+
+// Function to spin the roulette
+function spinRoulette() {
+    const numSpins = 10; // Number of spins
+    const spinDuration = 1000; // Duration of each spin (in milliseconds)
+    const totalSpinTime = numSpins * spinDuration;
+
+    let currentSpin = 0;
+    let currentRotation = 0;
+
+    const rotateRoulette = () => {
+        currentRotation += spinSpeed;
+        canvas.style.transform = `rotate(${currentRotation}rad)`;
+
+        if (currentSpin < numSpins) {
+            requestAnimationFrame(rotateRoulette);
+        } else {
+            setTimeout(() => {
+                canvas.style.transform = "rotate(0)";
+                isSpinning = false;
+                createSegments();
+            }, spinDuration);
+        }
+
+        currentSpin++;
+    };
+
+    rotateRoulette();
 }
 
 // Initial creation of segments
