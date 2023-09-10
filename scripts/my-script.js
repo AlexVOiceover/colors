@@ -49,6 +49,11 @@ function createSegments() {
             // Set the background color of the textbox
             colorCodeTextbox.style.backgroundColor = colors[i];
 
+            // Check if the background color is dark and adjust font color
+            if (isDarkColor(colors[i])) {
+                colorCodeTextbox.style.color = "white";
+            }
+
             // Add the textbox to the color code container
             colorCodeContainer.appendChild(colorCodeTextbox);
         }
@@ -83,6 +88,15 @@ function getRandomColor() {
     }
 
     return color;
+}
+
+function isDarkColor(color) {
+    // Calculate the luminance of the color to determine if it's dark
+    const r = parseInt(color.slice(1, 3), 16);
+    const g = parseInt(color.slice(3, 5), 16);
+    const b = parseInt(color.slice(5, 7), 16);
+    const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+    return luminance < 0.5; // You can adjust the threshold for what you consider "dark"
 }
 
 // Initial creation of segments
