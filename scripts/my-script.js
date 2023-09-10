@@ -1,5 +1,6 @@
 const canvas = document.getElementById("rouletteCircle");
 const ctx = canvas.getContext("2d");
+const h1 = document.querySelector("h1"); // Select the h1 element
 
 function createSegments() {
     const numColorsTextbox = document.getElementById("numColorsTextbox");
@@ -33,6 +34,12 @@ function createSegments() {
             ctx.closePath();
             ctx.fill();
         }
+
+        // Update h1 element's color dynamically
+        h1.style.background = `linear-gradient(to right, ${colors.join(", ")})`;
+        h1.style.background = `linear-gradient(to right, ${gradientColors})`;
+        h1.style["-webkit-background-clip"] = "text";
+        h1.style.color = "transparent";
     }
 }
 
