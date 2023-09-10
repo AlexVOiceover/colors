@@ -8,9 +8,8 @@ h1 {font-family: 'Roboto', sans-serif;
 
 h2 {color: rgb(194, 4, 48, 0.8);
     font-family: 'Roboto', sans-serif;
-    font-size: 7em;
-    background-color: rgba(0, 0, 0, 0.5);
-    margin-bottom: 0em;}
+    font-size: 3em;
+     margin-bottom: 0em;}
 
 p {color: rgb(0, 0, 0);
     font-family: 'Roboto', sans-serif;
@@ -20,10 +19,8 @@ p {color: rgb(0, 0, 0);
 
 .main-container {   
     display: flex;
+    flex-direction: column;
     width: auto;
-    overflow-x: scroll;
-    overflow-y: hidden;
-   /* scroll-snap-type: x mandatory; */
 }
 
 html, body {
@@ -33,7 +30,14 @@ html, body {
     text-size-adjust: 100%;
     margin: 0.5%;
     height: 100%;
-    background-color: rgb(44, 44, 44);
+ 
+}
+
+.textbox {
+    border:1px solid rgb(0, 0, 0);
+    font-family: 'Orbitron', sans-serif;
+    font-size: large;
+    letter-spacing: 0.2em;
 }
 
 /* For mobile devices*/
