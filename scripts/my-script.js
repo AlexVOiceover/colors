@@ -5,5 +5,7 @@ function validateInput() {
     if (isNaN(value) || value < 2 || value > 6) {
         alert("Please enter a number between 2 and 6.");
         inputElement.value = "3"; // Set default value to 3
+    } else {
+        document.getElementById("rouletteCircle").setAttribute("data-segments", value);
     }
 }

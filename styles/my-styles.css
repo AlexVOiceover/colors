@@ -40,6 +40,49 @@ html, body {
     letter-spacing: 0.2em;
 }
 
+.circle {
+    width: 200px;
+    height: 200px;
+    background-color: #c20430;
+    border-radius: 50%;
+    margin: 20px auto;
+    position: relative;
+  }
+  
+  .circle:after {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 100px 50px;
+    border-color: transparent transparent transparent transparent;
+    transform: rotate(0deg);
+    transition: transform 0.5s ease-in-out;
+  }
+  
+  /* Add segments based on numColorsTextbox value */
+  .circle[data-segments="2"]:after {
+    transform: rotate(180deg);
+  }
+  
+  .circle[data-segments="3"]:after {
+    transform: rotate(120deg);
+  }
+  
+  .circle[data-segments="4"]:after {
+    transform: rotate(90deg);
+  }
+  
+  .circle[data-segments="5"]:after {
+    transform: rotate(72deg);
+  }
+  
+  .circle[data-segments="6"]:after {
+    transform: rotate(60deg);
+  }
+
+
 /* For mobile devices*/
 @media all and (pointer:none) , (pointer:coarse) {
     h1 {font-size: 2.5em;}
