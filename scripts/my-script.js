@@ -68,6 +68,10 @@ function createSegments() {
     }
 }
 
+// Generate new colors on click
+const rouletteCircle = document.getElementById("rouletteCircle");
+rouletteCircle.addEventListener("click", generateNewColors);
+
 function getRandomColors(numSegments) {
     const colors = [];
 
