@@ -3,7 +3,7 @@ const ctx = canvas.getContext("2d");
 const h1 = document.querySelector("h1"); // Select the h1 element
 
 let isSpinning = false; // Track if the roulette is spinning
-let spinSpeed = 0.05; // Speed of spinning
+let spinSpeed = 0.2; // Speed of spinning
 
 function createSegments() {
     if (isSpinning) return; // Prevent creating segments while spinning
@@ -71,15 +71,6 @@ function createSegments() {
     }
 }
 
-// Generate new colors and start spinning on click
-const rouletteCircle = document.getElementById("rouletteCircle");
-rouletteCircle.addEventListener("click", () => {
-    if (!isSpinning) {
-        isSpinning = true;
-        spinRoulette();
-    }
-});
-
 function getRandomColors(numSegments) {
     const colors = [];
 
@@ -111,9 +102,18 @@ function isDarkColor(color) {
     return luminance < 0.5; // You can adjust the threshold for what you consider "dark"
 }
 
+// Generate new colors and start spinning on click
+const rouletteCircle = document.getElementById("rouletteCircle");
+rouletteCircle.addEventListener("click", () => {
+    if (!isSpinning) {
+        isSpinning = true;
+        spinRoulette();
+    }
+});
+
 // Function to spin the roulette
 function spinRoulette() {
-    const numSpins = 10; // Number of spins
+    const numSpins = 100; // Number of spins
     const spinDuration = 1000; // Duration of each spin (in milliseconds)
     const totalSpinTime = numSpins * spinDuration;
 
@@ -123,6 +123,11 @@ function spinRoulette() {
     const rotateRoulette = () => {
         currentRotation += spinSpeed;
         canvas.style.transform = `rotate(${currentRotation}rad)`;
+
+        if (currentSpin === Math.floor(numSpins / 2)) {
+            // Generate new colors when halfway through spins
+            createSegments();
+        }
 
         if (currentSpin < numSpins) {
             requestAnimationFrame(rotateRoulette);
