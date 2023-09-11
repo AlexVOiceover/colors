@@ -2,11 +2,16 @@ const canvas = document.getElementById("rouletteCircle");
 const ctx = canvas.getContext("2d");
 const h1 = document.querySelector("h1"); // Select the h1 element
 
-let isSpinning = false; // Track if the roulette is spinning
-let spinSpeed = 150; // Speed of spinning
+const slowSpeed = 1;
+const fastSpeed = 25;
+const totalFastSpins = 4;
+const intervalDuration = (totalFastSpins * 2 * Math.PI * 1000) / fastSpeed; // Calculate the interval duration based on fastSpeed
+let spinSpeed = slowSpeed; // Speed of spinning (initially slow)
+let fastSpinsRemaining = 0; // Number of remaining fast spins
+let currentRotation = 0;
+let colorChanged = false; 
 
 function createSegments() {
-   
     const numColorsTextbox = document.getElementById("numColorsTextbox");
     const numSegments = parseInt(numColorsTextbox.value);
 
@@ -101,52 +106,60 @@ function isDarkColor(color) {
     return luminance < 0.5; // You can adjust the threshold for what you consider "dark"
 }
 
-// Listen for clicks on the roulette
+
+function spinRoulette() {
+    currentRotation += spinSpeed;
+    canvas.style.transform = `rotate(${currentRotation}deg)`;
+
+    if (fastSpinsRemaining > 0 && fastSpinsRemaining === Math.ceil(totalFastSpins / 6) && !colorChanged) {
+        // Generate new colors only once when halfway through fast spins
+        createSegments();
+        colorChanged = true; // Set to true so it won't change colors again
+    }
+
+    if (fastSpinsRemaining === 0) {
+        colorChanged = false; // Reset color change tracker when not fast spinning
+    }
+
+    requestAnimationFrame(spinRoulette);
+}
+
+/// Listen for clicks on the roulette
 rouletteCircle.addEventListener("click", () => {
-    if (!isSpinning) {
-        isSpinning = true;
-        canvas.style.animationPlayState = "paused"; // Pause the CSS animation
-        spinRouletteCustomSpeed();
+    if (fastSpinsRemaining === 0) {
+        fastSpinsRemaining = totalFastSpins; // Set the number of fast spins
+        colorChanged = false; // Reset color change tracker
+
+        // Define the initial acceleration
+        let acceleration = 0.001;
+
+        // Function to gradually increase the spin speed
+        const increaseSpinSpeed = () => {
+            if (spinSpeed < fastSpeed) {
+                spinSpeed += acceleration; // Increase the spin speed gradually
+                console.log(spinSpeed);
+                requestAnimationFrame(increaseSpinSpeed);
+                acceleration += 0.001; // Increase the acceleration
+            }
+        };
+
+        // Start increasing the spin speed
+        increaseSpinSpeed();
     }
 });
 
-// Function to spin the roulette with custom speed
-function spinRouletteCustomSpeed() {
-    
-    const totalSpins = 100; // Total number of full spins
-    const spinDuration = 100; // Duration of each spin (in milliseconds)
-    const degreesPerSpin = 360 * totalSpins;
-
-    let currentSpin = 0;
-    let currentRotation = 0;
-
-    const rotateRoulette = () => {
-        currentRotation += spinSpeed;
-        canvas.style.transform = `rotate(${currentRotation}deg)`;
-
-        if (currentSpin === Math.floor(totalSpins / 2)) {
-            // Generate new colors when halfway through spins
-            createSegments();
+// Update fast spins remaining and spin speed
+setInterval(() => {
+    if (fastSpinsRemaining > 0) {
+        fastSpinsRemaining--;
+        if (fastSpinsRemaining === 0) {
+            spinSpeed = slowSpeed; // Reset the spin speed to slow
         }
-
-        if (currentSpin < totalSpins) {
-            requestAnimationFrame(rotateRoulette);
-        } else {
-            setTimeout(() => {
-                // Return to normal spinning speed by adding the CSS animation class
-                canvas.style.animationPlayState = "running";
-                isSpinning = false; // Custom spin completed
-            }, spinDuration);
-        }
-        currentSpin++;
-    };
-
-    // Pause the CSS animation
-    canvas.style.animationPlayState = "paused";
-
-    // Perform the custom spin animation
-    rotateRoulette();
-}
+    }
+}, intervalDuration);
 
 // Initial creation of segments
 createSegments();
+
+// Start the continuous spinning
+spinRoulette();
