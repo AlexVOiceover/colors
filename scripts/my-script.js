@@ -3,11 +3,10 @@ const ctx = canvas.getContext("2d");
 const h1 = document.querySelector("h1"); // Select the h1 element
 
 let isSpinning = false; // Track if the roulette is spinning
-let spinSpeed = 0.2; // Speed of spinning
+let spinSpeed = 150; // Speed of spinning
 
 function createSegments() {
-    if (isSpinning) return; // Prevent creating segments while spinning
-
+   
     const numColorsTextbox = document.getElementById("numColorsTextbox");
     const numSegments = parseInt(numColorsTextbox.value);
 
@@ -102,46 +101,50 @@ function isDarkColor(color) {
     return luminance < 0.5; // You can adjust the threshold for what you consider "dark"
 }
 
-// Generate new colors and start spinning on click
-const rouletteCircle = document.getElementById("rouletteCircle");
+// Listen for clicks on the roulette
 rouletteCircle.addEventListener("click", () => {
     if (!isSpinning) {
         isSpinning = true;
-        spinRoulette();
+        canvas.style.animationPlayState = "paused"; // Pause the CSS animation
+        spinRouletteCustomSpeed();
     }
 });
 
-// Function to spin the roulette
-function spinRoulette() {
-    const numSpins = 100; // Number of spins
-    const spinDuration = 1000; // Duration of each spin (in milliseconds)
-    const totalSpinTime = numSpins * spinDuration;
+// Function to spin the roulette with custom speed
+function spinRouletteCustomSpeed() {
+    
+    const totalSpins = 100; // Total number of full spins
+    const spinDuration = 100; // Duration of each spin (in milliseconds)
+    const degreesPerSpin = 360 * totalSpins;
 
     let currentSpin = 0;
     let currentRotation = 0;
 
     const rotateRoulette = () => {
         currentRotation += spinSpeed;
-        canvas.style.transform = `rotate(${currentRotation}rad)`;
+        canvas.style.transform = `rotate(${currentRotation}deg)`;
 
-        if (currentSpin === Math.floor(numSpins / 2)) {
+        if (currentSpin === Math.floor(totalSpins / 2)) {
             // Generate new colors when halfway through spins
             createSegments();
         }
 
-        if (currentSpin < numSpins) {
+        if (currentSpin < totalSpins) {
             requestAnimationFrame(rotateRoulette);
         } else {
             setTimeout(() => {
-                canvas.style.transform = "rotate(0)";
-                isSpinning = false;
-                createSegments();
+                // Return to normal spinning speed by adding the CSS animation class
+                canvas.style.animationPlayState = "running";
+                isSpinning = false; // Custom spin completed
             }, spinDuration);
         }
-
         currentSpin++;
     };
 
+    // Pause the CSS animation
+    canvas.style.animationPlayState = "paused";
+
+    // Perform the custom spin animation
     rotateRoulette();
 }
 
