@@ -9,7 +9,16 @@ const intervalDuration = (totalFastSpins * 2 * Math.PI * 1000) / fastSpeed; // C
 let spinSpeed = slowSpeed; // Speed of spinning (initially slow)
 let fastSpinsRemaining = 0; // Number of remaining fast spins
 let currentRotation = 0;
-let colorChanged = false; 
+let colorChanged = false;
+let lockedColors = [];
+
+// Initialize lockedColors array with color objects
+function initializeLockedColors(numSegments) {
+    lockedColors = Array.from({ length: numSegments }, (_, index) => ({
+        color: getRandomColor(),
+        selected: false,
+    }));
+}
 
 function createSegments() {
     const numColorsTextbox = document.getElementById("numColorsTextbox");
@@ -22,7 +31,7 @@ function createSegments() {
         canvas.width = canvas.height = 300; // Set canvas size
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        const colors = getRandomColors(numSegments);
+        initializeLockedColors(numSegments);
 
         ctx.beginPath();
         ctx.arc(canvas.width / 2, canvas.height / 2, canvas.width / 2, 0, 2 * Math.PI);
@@ -30,7 +39,7 @@ function createSegments() {
         const sectorAngle = (2 * Math.PI) / numSegments;
 
         for (let i = 0; i < numSegments; i++) {
-            ctx.fillStyle = colors[i];
+            ctx.fillStyle = lockedColors[i].color;
             ctx.beginPath();
             ctx.moveTo(canvas.width / 2, canvas.height / 2);
             ctx.arc(
@@ -52,39 +61,54 @@ function createSegments() {
             // Create a textbox for each color code
             const colorCodeTextbox = document.createElement("input");
             colorCodeTextbox.type = "text";
-            colorCodeTextbox.value = colors[i];
+            colorCodeTextbox.value = lockedColors[i].color;
             colorCodeTextbox.readOnly = true;
 
             // Set the background color of the textbox
-            colorCodeTextbox.style.backgroundColor = colors[i];
+            colorCodeTextbox.style.backgroundColor = lockedColors[i].color;
 
             // Check if the background color is dark and adjust font color
-            if (isDarkColor(colors[i])) {
+            if (isDarkColor(lockedColors[i].color)) {
                 colorCodeTextbox.style.color = "white";
             }
+
+            // Apply the border and selected state if the color is locked
+            if (lockedColors[i].selected) {
+                colorCodeTextbox.classList.add("locked-color");
+                colorCodeTextbox.style.borderColor = "black";
+            }
+
+            colorCodeTextbox.addEventListener("click", (event) => {
+                event.stopPropagation(); // Prevent further propagation of the click event
+
+                // Toggle the selected state for the clicked color
+                lockedColors[i].selected = !lockedColors[i].selected;
+                console.log("toggled selected");
+                console.log(lockedColors);
+
+                // Toggle the CSS class for visual indication
+                colorCodeTextbox.classList.toggle("locked-color");
+
+                // Set the border color based on the selected state
+                if (lockedColors[i].selected) {
+                    colorCodeTextbox.style.borderColor = "black";
+                } else {
+                    colorCodeTextbox.style.borderColor = "";
+                }
+            });
 
             // Add the textbox to the color code container
             colorCodeContainer.appendChild(colorCodeTextbox);
         }
 
         // Update h1 element's color dynamically
-        const gradientColors = colors.join(", ");
+        const gradientColors = lockedColors.map((item) => item.color).join(", ");
         h1.style.background = `linear-gradient(to right, ${gradientColors})`;
         h1.style["-webkit-background-clip"] = "text";
         h1.style.color = "transparent";
     }
 }
 
-function getRandomColors(numSegments) {
-    const colors = [];
-
-    for (let i = 0; i < numSegments; i++) {
-        const randomColor = getRandomColor();
-        colors.push(randomColor);
-    }
-
-    return colors;
-}
 
 function getRandomColor() {
     const letters = "0123456789ABCDEF";
@@ -95,7 +119,7 @@ function getRandomColor() {
     }
 
     return color;
-}
+} 
 
 function isDarkColor(color) {
     // Calculate the luminance of the color to determine if it's dark
@@ -104,6 +128,7 @@ function isDarkColor(color) {
     const b = parseInt(color.slice(5, 7), 16);
     const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
     return luminance < 0.5; // You can adjust the threshold for what you consider "dark"
+    
 }
 
 
@@ -111,7 +136,7 @@ function spinRoulette() {
     currentRotation += spinSpeed;
     canvas.style.transform = `rotate(${currentRotation}deg)`;
 
-    if (fastSpinsRemaining > 0 && fastSpinsRemaining === Math.ceil(totalFastSpins / 6) && !colorChanged) {
+    if (fastSpinsRemaining > 0 && fastSpinsRemaining === Math.ceil(totalFastSpins / 2) && !colorChanged) {
         // Generate new colors only once when halfway through fast spins
         createSegments();
         colorChanged = true; // Set to true so it won't change colors again
@@ -122,30 +147,43 @@ function spinRoulette() {
     }
 
     requestAnimationFrame(spinRoulette);
+    
 }
 
 /// Listen for clicks on the roulette
 rouletteCircle.addEventListener("click", () => {
+    console.log(lockedColors);
     if (fastSpinsRemaining === 0) {
         fastSpinsRemaining = totalFastSpins; // Set the number of fast spins
         colorChanged = false; // Reset color change tracker
 
         // Define the initial acceleration
-        let acceleration = 0.001;
+        let acceleration = 0.2; 
+        let isAccelerating = true;
 
-        // Function to gradually increase the spin speed
-        const increaseSpinSpeed = () => {
+           // Function to gradually increase the spin speed
+        const accelerate = () => {
             if (spinSpeed < fastSpeed) {
                 spinSpeed += acceleration; // Increase the spin speed gradually
-                console.log(spinSpeed);
-                requestAnimationFrame(increaseSpinSpeed);
-                acceleration += 0.001; // Increase the acceleration
+                requestAnimationFrame(accelerate);
+            } else {
+                isAccelerating = false; // Start decelerating
+                decelerate();
             }
         };
 
-        // Start increasing the spin speed
-        increaseSpinSpeed();
-    }
+        // Function to gradually decrease the spin speed
+        const decelerate = () => {
+            if (spinSpeed > slowSpeed) {
+                spinSpeed -= acceleration; // Decrease the spin speed gradually
+                requestAnimationFrame(decelerate);
+            } else {
+                spinSpeed = slowSpeed; // Ensure spin speed doesn't go below slowSpeed
+            }
+        };
+        // Start accelerating
+        accelerate();
+}
 });
 
 // Update fast spins remaining and spin speed

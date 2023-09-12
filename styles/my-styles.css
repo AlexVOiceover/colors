@@ -42,21 +42,25 @@ html, body {
 }
 
 .textbox {
-    border: 1px solid rgb(0, 0, 0);
+   
+    text-align: center;
     font-family: 'Orbitron', sans-serif;
     font-size: large;
     letter-spacing: 0.2em;
 }
 
+.locked-color {
+    border: 4px solid black;
+}
+
 .circle {
     width: 100%;
-    height: 100%;
+    height: AUTO;
     background-color: transparent;
     border-radius: 50%;
     margin:2em auto;
     position: relative;
 }
-
 
 .color-code-container {
     display: flex;
@@ -66,7 +70,6 @@ html, body {
 }
 
 .color-code-container input[type="text"] {
-    border: none;
     padding: 5px;
     font-size: 16px;
     text-align: center;
