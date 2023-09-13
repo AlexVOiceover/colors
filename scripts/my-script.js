@@ -28,14 +28,12 @@ function initializeLockedColors() {
 
 // Update lockedColors array with color objects
 function updateLockedColors(numSegments) {
-console.log("inside update");
     for (let i = 0; i < numSegments; i++) {
         if (!lockedColors[i].selected) {
             lockedColors[i].color = getRandomColor();
         }
     }
 }
-
 
 function createSegments() {
     const numColorsTextbox = document.getElementById("numColorsTextbox");
@@ -100,8 +98,6 @@ function createSegments() {
 
                 // Toggle the selected state for the clicked color
                 lockedColors[i].selected = !lockedColors[i].selected;
-                console.log("locked colors");
-                console.log(lockedColors);
 
                 // Toggle the CSS class for visual indication
                 colorCodeTextbox.classList.toggle("locked-color");
@@ -143,7 +139,6 @@ function spinRoulette() {
     
 }
 
-
 function getRandomColor() {
     const letters = "0123456789ABCDEF";
     let color = "#";
@@ -165,11 +160,9 @@ function isDarkColor(color) {
     
 }
 
-
-
 /// Listen for clicks on the roulette
 rouletteCircle.addEventListener("click", () => {
-    console.log(lockedColors);
+    
     if (fastSpinsRemaining === 0) {
         fastSpinsRemaining = totalFastSpins; // Set the number of fast spins
         colorChanged = false; // Reset color change tracker
@@ -212,7 +205,7 @@ buttonPlus.addEventListener("click", () => {
 });
 
 buttonMinus.addEventListener("click", () => {
-    if (numSegments > 0) {
+    if (numSegments > 2) {
         numSegments--;
         numColorsTextbox.value = numSegments;
         createSegments(); // Call createSegments when the number of segments changes

@@ -41,18 +41,42 @@ html, body {
     height: 100%;
 }
 
-.textbox {
-    text-align: center;
-    font-family: 'Orbitron', sans-serif;
-    font-size: large;
-    letter-spacing: 0.2em;
+.textbox[type="number"] {
+    appearance: none;
+    -moz-appearance: textfield; /* Firefox */
+    width: 30px; 
+    padding: 5px; 
+    text-align: center; 
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    user-select: none; /* Prevent text selection */
+    pointer-events: none; /* Disable pointer events to make it non-editable */
 }
 
-button {
-    text-align: center;
-    font-family: 'Orbitron', sans-serif;
-    font-size: large;
-    letter-spacing: 0.2em;
+/* Hide the up and down arrows on number input in Webkit browsers (e.g., Chrome, Safari) */
+.textbox[type="number"]::-webkit-inner-spin-button,
+.textbox[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+#buttonMinus,
+#buttonPlus {
+    background-color: #ccc;
+    border: none;
+    color: #000;
+    font-weight: bold;
+    font-size: 18px;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+}
+
+/* Style the + and - buttons on hover */
+#buttonMinus:hover,
+#buttonPlus:hover {
+    background-color: #aaa;
 }
 
 .locked-color {
