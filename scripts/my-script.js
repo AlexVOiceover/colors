@@ -115,7 +115,14 @@ function createSegments() {
         }
 
         // Update h1 element's color dynamically
-        const gradientColors = lockedColors.map((item) => item.color).join(", ");
+
+
+
+const gradientColors = lockedColors
+    .slice(0, numSegments) // Use slice to include only the first numSegments colors
+    .map((item) => item.color)
+    .join(", ");
+
         h1.style.background = `linear-gradient(to right, ${gradientColors})`;
         h1.style["-webkit-background-clip"] = "text";
         h1.style.color = "transparent";
