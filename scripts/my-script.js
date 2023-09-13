@@ -12,17 +12,34 @@ let currentRotation = 0;
 let colorChanged = false;
 let lockedColors = [];
 
-// Initialize lockedColors array with color objects
-function initializeLockedColors(numSegments) {
-    lockedColors = Array.from({ length: numSegments }, (_, index) => ({
+let numSegments = parseInt(numColorsTextbox.value);
+
+const buttonMinus = document.getElementById("buttonMinus");
+const buttonPlus = document.getElementById("buttonPlus");
+
+// Initialize lockedColors array with color objects. I will do it with 8 colours, but only show numSegments colours
+function initializeLockedColors() {
+    const numColors = 8; // Change this to the number of colors you want
+    lockedColors = Array.from({ length: numColors }, (_, index) => ({
         color: getRandomColor(),
         selected: false,
     }));
 }
 
+// Update lockedColors array with color objects
+function updateLockedColors(numSegments) {
+console.log("inside update");
+    for (let i = 0; i < numSegments; i++) {
+        if (!lockedColors[i].selected) {
+            lockedColors[i].color = getRandomColor();
+        }
+    }
+}
+
+
 function createSegments() {
     const numColorsTextbox = document.getElementById("numColorsTextbox");
-    const numSegments = parseInt(numColorsTextbox.value);
+    // const numSegments = parseInt(numColorsTextbox.value);
 
     if (isNaN(numSegments) || numSegments < 2 || numSegments > 6) {
         alert("Please enter a number between 2 and 6.");
@@ -31,7 +48,7 @@ function createSegments() {
         canvas.width = canvas.height = 300; // Set canvas size
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        initializeLockedColors(numSegments);
+        updateLockedColors(numSegments);
 
         ctx.beginPath();
         ctx.arc(canvas.width / 2, canvas.height / 2, canvas.width / 2, 0, 2 * Math.PI);
@@ -83,7 +100,7 @@ function createSegments() {
 
                 // Toggle the selected state for the clicked color
                 lockedColors[i].selected = !lockedColors[i].selected;
-                console.log("toggled selected");
+                console.log("locked colors");
                 console.log(lockedColors);
 
                 // Toggle the CSS class for visual indication
@@ -109,6 +126,23 @@ function createSegments() {
     }
 }
 
+function spinRoulette() {
+    currentRotation += spinSpeed;
+    canvas.style.transform = `rotate(${currentRotation}deg)`;
+
+    if (fastSpinsRemaining > 0 && fastSpinsRemaining === Math.ceil(totalFastSpins / 2) && !colorChanged) {
+        // Generate new colors only once when halfway through fast spins
+        createSegments();
+        colorChanged = true; // Set to true so it won't change colors again
+    }
+
+    if (fastSpinsRemaining === 0) {
+        colorChanged = false; // Reset color change tracker when not fast spinning
+    }
+    requestAnimationFrame(spinRoulette);
+    
+}
+
 
 function getRandomColor() {
     const letters = "0123456789ABCDEF";
@@ -132,23 +166,6 @@ function isDarkColor(color) {
 }
 
 
-function spinRoulette() {
-    currentRotation += spinSpeed;
-    canvas.style.transform = `rotate(${currentRotation}deg)`;
-
-    if (fastSpinsRemaining > 0 && fastSpinsRemaining === Math.ceil(totalFastSpins / 2) && !colorChanged) {
-        // Generate new colors only once when halfway through fast spins
-        createSegments();
-        colorChanged = true; // Set to true so it won't change colors again
-    }
-
-    if (fastSpinsRemaining === 0) {
-        colorChanged = false; // Reset color change tracker when not fast spinning
-    }
-
-    requestAnimationFrame(spinRoulette);
-    
-}
 
 /// Listen for clicks on the roulette
 rouletteCircle.addEventListener("click", () => {
@@ -186,6 +203,22 @@ rouletteCircle.addEventListener("click", () => {
 }
 });
 
+buttonPlus.addEventListener("click", () => {
+    if (numSegments < 6) {
+        numSegments++;
+        numColorsTextbox.value = numSegments;
+        createSegments(); // Call createSegments when the number of segments changes
+    }
+});
+
+buttonMinus.addEventListener("click", () => {
+    if (numSegments > 0) {
+        numSegments--;
+        numColorsTextbox.value = numSegments;
+        createSegments(); // Call createSegments when the number of segments changes
+    }
+});
+
 // Update fast spins remaining and spin speed
 setInterval(() => {
     if (fastSpinsRemaining > 0) {
@@ -195,6 +228,9 @@ setInterval(() => {
         }
     }
 }, intervalDuration);
+
+// Create object
+initializeLockedColors(numSegments);
 
 // Initial creation of segments
 createSegments();

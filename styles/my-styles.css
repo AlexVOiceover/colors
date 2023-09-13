@@ -42,7 +42,13 @@ html, body {
 }
 
 .textbox {
-   
+    text-align: center;
+    font-family: 'Orbitron', sans-serif;
+    font-size: large;
+    letter-spacing: 0.2em;
+}
+
+button {
     text-align: center;
     font-family: 'Orbitron', sans-serif;
     font-size: large;
