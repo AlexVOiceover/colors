@@ -1,3 +1,4 @@
 #  Colors
 In this short project I created an app inspired in coolors.
-I am using a flex container to show color bands, 
+Press the roulette to generate a new set of colors.
+Press on the colored textboxes to lock and keep that color.
